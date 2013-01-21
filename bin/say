@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby-local-exec
+
+require '../lib/say.rb'
+
+as = AudioSample.new(message: ARGV.join(" "))
+as.play

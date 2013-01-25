@@ -46,4 +46,10 @@ class AudioSample
       @log.info { "Directory created: #{@dir}." }
     end
   end
+end # class AudioSample
+
+def say(message)
+  as = AudioSample.new(message: message)
+  as.play
 end
+

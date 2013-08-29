@@ -9,7 +9,7 @@ class AudioSample
   def initialize(opts)
     @message = opts[:message]
     @lang = opts[:lang] ||= "en"
-    @dir = opts[:folder] ||= "#{ENV['HOME']}/Documents/AudioSamples"
+    @dir = opts[:folder] ||= "#{ENV['HOME']}/Documents/AudioSamples/#{@lang}"
 
     @filename = digest_filename
     @filepath = "#{@dir}/#{@filename}"
@@ -17,7 +17,7 @@ class AudioSample
 
     log_file = File.dirname(__FILE__) + '/../log/say.log'
     @log = Logger.new(log_file)
-    sanity_checks
+    create_missing_dirs
     download unless File.exists? @filepath
   end
 
@@ -40,7 +40,7 @@ class AudioSample
     system cmd
   end
 
-  def sanity_checks
+  def create_missing_dirs
     unless Dir.exists? @dir
       FileUtils.mkdir_p @dir
       @log.info { "Directory created: #{@dir}." }

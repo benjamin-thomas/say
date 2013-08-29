@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby-local-exec
 
-# require '../lib/say.rb'
 require_relative '../lib/say.rb'
 
+# as = AudioSample.new(lang: "fr", message: ARGV.join(" "))
 as = AudioSample.new(message: ARGV.join(" "))
 as.play

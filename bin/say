@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/say.rb'
-
 require 'optparse'
+
+trap("INT") do
+  puts "\nExiting..."
+  exit 1
+end
 
 options = {
   lang: 'en',
@@ -29,10 +33,6 @@ end.parse!
 lang = options.fetch(:lang)
 sleep = options.fetch(:sleep)
 repeat = options.fetch(:repeat)
-as = AudioSample.new(message: ARGV.join(" "), lang: lang, sleep: sleep, repeat: repeat)
 
-begin
-  as.play
-rescue Interrupt
-  puts "\nexiting..."
-end
+as = AudioSample.new(message: ARGV.join(" "), lang: lang, sleep: sleep, repeat: repeat)
+as.play

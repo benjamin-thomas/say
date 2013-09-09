@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby-local-exec
-
 require 'fileutils'
 require 'digest/sha2'
 require 'cgi'
@@ -14,9 +12,10 @@ class AudioSample
     @filename = digest_filename
     @filepath = "#{@dir}/#{@filename}"
 
+    # FIXME: buggy
+    #log_file = File.dirname(__FILE__) + '/../log/say.log'
 
-    log_file = File.dirname(__FILE__) + '/../log/say.log'
-    @log = Logger.new(log_file)
+    @log = Logger.new(STDOUT)
     create_missing_dirs
     download unless File.exists? @filepath
   end

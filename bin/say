@@ -21,18 +21,18 @@ OptionParser.new do |opts|
     options[:lang] = lang
   end
 
-  opts.on("-s", "--sleep SLEEP_VALUE", "Don't play straight away but schedule to play by SLEEP_VALUE") do |sleep|
+  opts.on("-s", "--sleep SLEEP", "Don't play straight away but schedule to play by SLEEP (ex: 60, 60s, 1m, 1h)") do |sleep|
     options[:sleep] = sleep
   end
 
-  opts.on("-r", "--repeat REPEAT_VALUE", "Loop every REPEAT_VALUE (default 5m)") do |repeat|
+  opts.on("-r", "--repeat REPEAT", "Loop every REPEAT (default 5m)") do |repeat|
     options[:repeat] = repeat
   end
 end.parse!
 
-lang = options.fetch(:lang)
-sleep = options.fetch(:sleep)
-repeat = options.fetch(:repeat)
-
-as = AudioSample.new(message: ARGV.join(" "), lang: lang, sleep: sleep, repeat: repeat)
-as.play
+AudioSample.new(
+  message: ARGV.join(" "),
+  lang: options.fetch(:lang),
+  sleep: options.fetch(:sleep),
+  repeat: options.fetch(:repeat)
+).play

@@ -5,8 +5,10 @@ require 'logger'
 
 class AudioSample
   def initialize(opts)
-    @message = opts[:message]
-    @lang = opts[:lang] ||= "en"
+    @message = opts.fetch(:message)
+    @lang = opts.fetch(:lang)
+    @sleep = opts.fetch(:sleep)
+    @repeat = opts.fetch(:repeat)
     @dir = opts[:folder] ||= "#{ENV['HOME']}/Documents/AudioSamples/#{@lang}"
 
     @filename = digest_filename
@@ -21,11 +23,45 @@ class AudioSample
   end
 
   def play
-    @log.info { "Playing: #{@filepath}" }
-    system %Q_mplayer "#{@filepath}" >/dev/null 2>&1_
+    sleep_for(@sleep)
+
+    loop do
+      play_chime
+
+      @log.info { "Playing: #{@filepath}" }
+      system %Q_mplayer "#{@filepath}" >/dev/null 2>&1_
+      sleep_for(@repeat)
+    end
   end
 
   private
+
+  def play_chime
+    root_path = File.expand_path(File.join(File.dirname(__FILE__), ".."))
+    chime_path =  "#{root_path}/assets/sounds/chime.mp3"
+    system %Q_mplayer "#{chime_path}" >/dev/null 2>&1_
+    sleep 1
+  end
+
+  def sleep_for(given_value)
+    return if given_value.nil?
+
+    sleep_value = convert_time_value(given_value)
+    @log.info { "Sleeping #{given_value} (#{sleep_value}s)" }
+    sleep sleep_value
+  end
+
+  def convert_time_value(given_value)
+    if given_value.end_with? "s"
+      sleep_value = given_value.to_i
+    elsif given_value.end_with? "m"
+      sleep_value = given_value.to_i * 60
+    elsif given_value.end_with? "h"
+      sleep_value = given_value.to_i * 60 ** 2
+    else
+      sleep_value = given_value.to_i
+    end
+  end
 
   def digest_filename
     "#{Digest::SHA256.hexdigest(@message)}.mp3"
@@ -46,9 +82,3 @@ class AudioSample
     end
   end
 end # class AudioSample
-
-def say(message)
-  as = AudioSample.new(message: message)
-  as.play
-end
-

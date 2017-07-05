@@ -71,6 +71,12 @@ class AudioSample
     query = CGI.escape(@message)
     url = "http://translate.google.com/translate_tts?tl=#{@lang}&q=#{query}"
     cmd = %Q_mplayer -user-agent "Mozilla/5.0" "#{url}" -dumpstream -dumpfile "#{@filepath}" >/dev/null 2>&1_
+
+    if !File.exist?(@filepath)
+      warn("Could not create: #{@filepath}")
+      exit 1
+    end
+
     @log.info { "Message downloaded: #{@message}." }
     system cmd
   end
